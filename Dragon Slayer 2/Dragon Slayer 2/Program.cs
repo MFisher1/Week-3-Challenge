@@ -11,7 +11,7 @@ namespace Dragon_Slayer_2
      public class Creature
      {
          private int[] HPvalue = new int[] { 100, 140, 20, 250 };
-         //private int[] firstWeaponDamage = new int[] {25,5,70,};
+         private int[] firstWeaponDamage = new int[] {25,5,70,   15,3,100,  26,2,100  };
 
          private enum MainWeapon {Sword, Kick, Fire, Bite}
          private enum SecondWeapon {FireBall, Poison, DeathJump, Electric}
@@ -65,6 +65,7 @@ namespace Dragon_Slayer_2
              players[0].HP -= 50;
              int value = 0;
              Enum weapon = ChooseAttack();
+             Random rnd = new Random();
              return value;
          }
          
