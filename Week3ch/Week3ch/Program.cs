@@ -110,9 +110,9 @@ namespace Week3ch
         static void Main(string[] args)
         {
             Collatz cl = LongestCollatzSequence();
+            Console.WriteLine("Longest Collatz Sequence is generated from number " + cl.number + " and has " + cl.hops + " elements");
             EvenFibonacciSequencer(10);
             FindNPrimes(10001);       
-            Console.WriteLine("Longest Collatz Sequence is generated from number " + cl.number + " and has " + cl.hops + " elements");
             Console.ReadLine();
         }
     }
