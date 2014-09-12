@@ -63,14 +63,6 @@ namespace Week3ch
                     if (isEven(number))
                     {
                      number = number / 2;
-                     
-                     var n = chains.Where(x => x.number == number);
-                     if (n.Any())
-                     {
-                         hop = hop + n.First().hops;
-                         break;
-                     }
-
                     }
                       else 
                         number = 3 * number + 1;               
@@ -115,14 +107,11 @@ namespace Week3ch
             Console.WriteLine("Fibonacci sequence of " + maxValue +" numbers:" + string.Join(", ", fib));
         }
 
-
-
         static void Main(string[] args)
         {
             Collatz cl = LongestCollatzSequence();
             EvenFibonacciSequencer(10);
-            FindNPrimes(10001);
-           
+            FindNPrimes(10001);       
             Console.WriteLine("Longest Collatz Sequence is generated from number " + cl.number + " and has " + cl.hops + " elements");
             Console.ReadLine();
         }
