@@ -1,0 +1,6 @@
+C:\Konstantin\Week-3-Challenge\Week3ch\Week3ch\bin\Debug\Week3ch.exe.config
+C:\Konstantin\Week-3-Challenge\Week3ch\Week3ch\bin\Debug\Week3ch.exe
+C:\Konstantin\Week-3-Challenge\Week3ch\Week3ch\bin\Debug\Week3ch.pdb
+C:\Konstantin\Week-3-Challenge\Week3ch\Week3ch\obj\Debug\Week3ch.csprojResolveAssemblyReference.cache
+C:\Konstantin\Week-3-Challenge\Week3ch\Week3ch\obj\Debug\Week3ch.exe
+C:\Konstantin\Week-3-Challenge\Week3ch\Week3ch\obj\Debug\Week3ch.pdb
