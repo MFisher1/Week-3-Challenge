@@ -13,9 +13,10 @@ namespace Dragon_Slayer_2
      public enum Special { FirstAidKit, WTF_It_Was, SpinAround, DrinkSeaWater }
      public enum GameType { History, TwoPlayersHistory, OnePLayerTeam, TwoVsTwo, Skirmish}
 
+    // main class for game unit
      public class Creature
      {
-         public int[] HPvalue = new int[] { 120, 115, 200, 240 };
+         public int[] HPvalue = new int[] { 120, 115, 200, 240 }; //it's a list initial HP parametrs
          public enum Controller {Player, AI}
          public string Name { get; set; }
          public int HP { get; set; }
@@ -24,12 +25,12 @@ namespace Dragon_Slayer_2
          public PlayerType plType { get; set; }
          public Controller pController { get; set; }
          public List<Weapon> weapons { get; set; }
-         public List<int> Upgrades { get; set; } // List of 4: 0) - HP, 1) -Weapon1, 2)-Weapon 2, 3) - Special
+         public List<int> Upgrades { get; set; }    // List of 4: 0) - HP, 1) -Weapon1, 2)-Weapon 2, 3) - Special
          public int numSpecial { get; set; }
          public int playerID { get; set; }
          public Team Team { get; set; }
 
-
+         //Constructor
          public Creature(string name, PlayerType pType, Controller contr)
          {
              int playertype = (int)pType;
@@ -45,6 +46,8 @@ namespace Dragon_Slayer_2
              }
              this.isAlive = true;
         }
+
+         // Respawn Unit
          public void Respawn()
          {
              int playertype = (int)this.plType;
@@ -54,7 +57,7 @@ namespace Dragon_Slayer_2
              this.numSpecial += 3+ this.Upgrades[3] / 10;
          }
      }
-
+    // class for weapon
     public class Weapon
     {
       public Enum weaponclass;
@@ -62,6 +65,7 @@ namespace Dragon_Slayer_2
       public int chance;
       public int accuracy;
     }
+    // helping class - item of enemies list
     public class PreLoadEnemy
     {
         public PlayerType type;
@@ -77,15 +81,15 @@ namespace Dragon_Slayer_2
             this.Team = team;
             
         }
-    }
-   
+    } 
+    //class for GUI, indepedently drawinf graphics and text
     public class Graphic
     {
         List<string> StaticBuffer = new List<string>();
         List<string> DynamicBuffer = new List<string>();
         public bool DrawGUI = true; 
 
-  
+        // Draw entire scene
         public void DrawScene()
         {
             if (DrawGUI)
@@ -102,25 +106,27 @@ namespace Dragon_Slayer_2
             }
         }
 
+        // Add text to buffer
         public void DrawText(string st)
         {
             DynamicBuffer.Add(st);
         }
+        // Add graphics to buffer
         public void DrawCanvas(string st)
         {
             StaticBuffer.Add(st);
         }
 
+        // Reset buffer to 0
         public void ResetDynamicBuffer()
         {
             DynamicBuffer.Clear();
         }
-
         public void ResetCanvasBuffer()
         {
             StaticBuffer.Clear();
         }
-
+    
         public void DrawPlayers(List<Creature> players)
         {
             this.ResetCanvasBuffer();
@@ -137,7 +143,7 @@ namespace Dragon_Slayer_2
             DrawScene();
         
         }
-
+        // function to draw player model
         public string DrawPlayer(Creature player, int line)
         {
             string value = "";
@@ -218,6 +224,7 @@ namespace Dragon_Slayer_2
             value = Scene[line];
             return value;
         }
+        // helping function to print 12 chars in a row
         private string CompleteString(string line)
         {
             string value = line;
@@ -229,7 +236,7 @@ namespace Dragon_Slayer_2
         }
     }
 
-
+    // THE GAME
     public class DragonSlayer2Game
      {
          private Random rnd = new Random();
@@ -251,7 +258,7 @@ namespace Dragon_Slayer_2
          public GameType GameType { get; set; }
          
 
-
+        // Game class containts players and weapons
          public DragonSlayer2Game ()
          {
              players = new List<Creature>();
@@ -283,6 +290,7 @@ namespace Dragon_Slayer_2
              }
           }
 
+        // Generate ID function
          public int GeneratePlayerID()
          {
              if (players.Count > 0)
@@ -307,12 +315,14 @@ namespace Dragon_Slayer_2
              players.Add(player);   
          }
 
+        // Randomly generate player
          public void AddRandomPlayer(string name, Creature.Controller contr, int Level, Team team)
          {
              PlayerType pType = (PlayerType)rnd.Next(0, 4);
              AddNewPlayer(name, pType, contr, team, Level);
          }
 
+        // Create weapon list for player depends on player Type
          public void GiveWeapons(Creature player)
          {
              player.weapons = new List<Weapon>();
@@ -321,13 +331,14 @@ namespace Dragon_Slayer_2
              player.weapons.Add(weapons[((int)player.plType)*3 + 2]);
          }
 
+        // Generate new ID fro player
          public void AddExistingPlayer(Creature player)
          {
              player.playerID = GeneratePlayerID();
              players.Add(player);
          }
 
-         // Choose enemies - logic of weapon action
+         // Choose enemies depends on weapon player has
          public List<int> PlayerChoseEnemy(Creature player, Weapon weapon)
          {
              List<Creature> toAttack = new List<Creature>();
@@ -371,6 +382,7 @@ namespace Dragon_Slayer_2
              return IDs;
          }
 
+        // Choose weapon from a weapon list
          public int ChooseWeapon(Creature player)
          {
             
@@ -407,6 +419,7 @@ namespace Dragon_Slayer_2
              return value - 1;
          }
 
+        // player attack enemy. Logic of weapon actions
          public void Attack(Creature player)
          {
             int weaponID = ChooseWeapon(player);
@@ -512,6 +525,7 @@ namespace Dragon_Slayer_2
              GUI.DrawScene();
          }
 
+        // Fucntion helping filter input from console
          public int ChooseOption(int numOpt)
          {
              int value = 0;
@@ -549,6 +563,7 @@ namespace Dragon_Slayer_2
              GUI.DrawScene();
          }
 
+        // Respawn players - give em initial paramaters
          public void RespawnPlayers()
          {
              foreach (var item in players)
@@ -557,7 +572,7 @@ namespace Dragon_Slayer_2
              }
          }
 
-      // One battle - several rounds
+       // One battle - several rounds
          public Team StartBattle(int battleNumber)
          { 
              
@@ -583,6 +598,8 @@ namespace Dragon_Slayer_2
 
              return winTeam;
          }
+
+        // Creating the List of enemies for next rounds
          public void GenerateGameSequence(GameType gametype) 
          {
              if (gametype == GameType.History)
@@ -672,7 +689,7 @@ namespace Dragon_Slayer_2
          
          }
 
-        // DEBUG and Balance SECTION
+        // DEBUG and Balance SECTION contains the same fucntion but with debug changes
          public void Debug(PlayerType pl1, PlayerType pl2, int pl1lvl, int pl2lvl)
          {
              GUI.DrawGUI = false;
@@ -763,7 +780,7 @@ namespace Dragon_Slayer_2
          }
          // END OF DEBUG
          
-        
+        // Interface to add player
          public void AddPlayersToGame(int number)
          {
              for (int j = 1; j <= number; j++)
@@ -786,6 +803,8 @@ namespace Dragon_Slayer_2
              Console.WriteLine();
              }
          }
+        
+        // Choose one of the gameTypes
          public void ChooseGameType()
          {
              Console.WriteLine("1) 1 PLayer History Mode");
@@ -811,8 +830,9 @@ namespace Dragon_Slayer_2
              player.Upgrades[input] += 10;
              player.Level++;
          }
+        
         //MAIN FUNCTION OF GAME
-         public void CreateGame()
+         public void StartGame()
          {
              // BEGIN OF GAME
              int numOfBattle = 1;
@@ -829,7 +849,7 @@ namespace Dragon_Slayer_2
              //CREATE HISTORY 
              GenerateGameSequence(this.GameType);
              
-             // BATLLE!
+             // BATLLE Logic!
              bool wishToContinue = true;
              while (wishToContinue)
              {
@@ -870,10 +890,6 @@ namespace Dragon_Slayer_2
 
              Console.WriteLine("Goodbye, " + players[0].Name);
              Console.ReadLine();
-            //..next round till team lose
-        //
-         // ask if wanna play -> Start level (next);
-             // create
 
          }
      }
@@ -885,7 +901,9 @@ namespace Dragon_Slayer_2
         {
 
             DragonSlayer2Game game = new DragonSlayer2Game();
-            game.CreateGame();
+            game.StartGame();
+
+            // Uncomment it to balance type of unit
             //game.Debug(PlayerType.Chupacabra, PlayerType.Dragon, 10, 10);
 
             Console.Read();

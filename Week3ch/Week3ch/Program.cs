@@ -114,6 +114,8 @@ namespace Week3ch
             EvenFibonacciSequencer(10);
             FindNPrimes(10001);       
             Console.ReadLine();
+            int[] array = new int[] {1,2,3};
+           
         }
     }
 }
