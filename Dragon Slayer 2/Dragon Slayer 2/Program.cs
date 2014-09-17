@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dragon_Slayer_2
 {
-     public enum Team { Good, Bad }
+     public enum Team { Good, Bad, Alien, SWAT }
      public enum PlayerType {Knight, Chupacabra, Dragon, Godzilla}
      public enum MainWeapon { Sword, Kick, Fire, Bite }
      public enum SecondWeapon { FireBall, PoisonSpit, DeathJump, Electric }
@@ -83,18 +83,22 @@ namespace Dragon_Slayer_2
     {
         List<string> StaticBuffer = new List<string>();
         List<string> DynamicBuffer = new List<string>();
+        public bool DrawGUI = true; 
 
   
         public void DrawScene()
         {
-            Console.Clear();
-            foreach (var item in StaticBuffer)
+            if (DrawGUI)
             {
-                Console.WriteLine(item);
-            }
-            foreach (var item in DynamicBuffer)
-            {
-                Console.WriteLine(item);
+                Console.Clear();
+                foreach (var item in StaticBuffer)
+                {
+                    Console.WriteLine(item);
+                }
+                foreach (var item in DynamicBuffer)
+                {
+                    Console.WriteLine(item);
+                }
             }
         }
 
@@ -165,40 +169,50 @@ namespace Dragon_Slayer_2
             Scene.Add(tmp);
             Scene.Add("          ");
 
-            if (player.plType == PlayerType.Knight) //
+            if (player.isAlive)
             {
-                Scene.Add("     O      ");
-                Scene.Add("    /|\\     ");
+                if (player.plType == PlayerType.Knight) //
+                {
+                    Scene.Add("     O      ");
+                    Scene.Add("    /|\\     ");
+                    Scene.Add("     |      ");
+                    Scene.Add("    / \\     ");
+                }
+
+                if (player.plType == PlayerType.Dragon)
+                {
+                    Scene.Add("   /\\_/\\    ");
+                    Scene.Add("  ( q p )   ");
+                    Scene.Add("    \\_/     ");
+                    Scene.Add("            ");
+
+                }
+                if (player.plType == PlayerType.Godzilla)
+                {
+                    Scene.Add("   /\\/\\/\\    ");
+                    Scene.Add("  ( q  p )   ");
+                    Scene.Add("   \\____/    ");
+                    Scene.Add("             ");
+
+                }
+
+                if (player.plType == PlayerType.Chupacabra)
+                {
+                    Scene.Add("    \\|/    ");
+                    Scene.Add("\\__(. .)__/");
+                    Scene.Add("   /\\_/\\   ");
+                    Scene.Add("  /\\   /\\  ");
+
+                }
+            }
+
+            else
+            {
+                Scene.Add("   R.I.P.   ");
+                Scene.Add("    _|_     ");
                 Scene.Add("     |      ");
-                Scene.Add("    / \\     ");   
+                Scene.Add("     |      ");
             }
-
-            if (player.plType == PlayerType.Dragon)
-            {
-                Scene.Add("   /\\_/\\    ");
-                Scene.Add("  ( q p )   ");
-                Scene.Add("    \\_/     ");
-                Scene.Add("            ");
-            
-            }
-            if (player.plType == PlayerType.Godzilla)
-            {
-                Scene.Add("   /\\/\\/\\    ");
-                Scene.Add("  ( q  p )   ");
-                Scene.Add("   \\____/    ");
-                Scene.Add("             ");
-
-            }
-
-            if (player.plType == PlayerType.Chupacabra)
-            {
-                Scene.Add("    \\|/    ");
-                Scene.Add("\\__(. .)__/");
-                Scene.Add("   /\\_/\\   ");
-                Scene.Add("  /\\   /\\  ");
-
-            }
-
             Scene.Add("------------");
 
             value = Scene[line];
@@ -220,7 +234,7 @@ namespace Dragon_Slayer_2
      {
          private Random rnd = new Random();
          private int[] WeaponDamageList = new int[] { 29, 7, 90,    20, 5, 100,   26, 2, 100,  //Knight
-                                                      35,10,80,     25,10,70,     20,2,100,    //Chupa
+                                                      45,10,80,     25,10,70,     10,2,100,    //Chupa
                                                       14,10,90,     15,5,80,      10,2,100,    //Dragon
                                                       10,15,90,     11,6,80,      13,3,100};   //Godzilla
 
@@ -234,7 +248,8 @@ namespace Dragon_Slayer_2
          public Graphic GUI = new Graphic();
          public int round = 1;
          List<List<PreLoadEnemy>> GameSequence = new List<List<PreLoadEnemy>>();
-         public GameType GameType { get; set; } 
+         public GameType GameType { get; set; }
+         
 
 
          public DragonSlayer2Game ()
@@ -341,7 +356,7 @@ namespace Dragon_Slayer_2
                      }
                          GUI.DrawText(player.Name + ", choose your enemy you want to attack: ");
                          GUI.DrawScene();
-                     int enemy = Convert.ToInt32(Console.ReadLine())-1;
+                     int enemy = ChooseOption(toAttack.Count)-1;
                      GUI.ResetDynamicBuffer();
                      if (enemy > toAttack.Count - 1) enemy = 0;
                      toAttack = toAttack.Where(x => x.playerID == toAttack[enemy].playerID).ToList();
@@ -372,7 +387,12 @@ namespace Dragon_Slayer_2
 
                  GUI.DrawText(player.Name + ", choose your weapon: ");
                  GUI.DrawScene();
-                 value = ChooseOption(3);
+
+                 // Fix bug with using non-existing weapon
+                 int weaponCountToUse = 3;
+                 if (player.numSpecial <= 0) weaponCountToUse = 2;
+                 
+                 value = ChooseOption(weaponCountToUse);
                  GUI.ResetDynamicBuffer();
              }
              else
@@ -471,6 +491,25 @@ namespace Dragon_Slayer_2
 
                  if (weaponID == 2) player.numSpecial--;
              }
+
+             // Who died raise your hand!
+             foreach (var item in players)
+             {
+                 if (item.HP <= 0)
+                 {
+                     item.HP = 0;
+                     item.isAlive = false;
+                 }
+             }
+
+             // Fix bug with overHealing
+             if (player.HP > player.HPvalue[(int)player.plType] + (player.Upgrades[0] - 1) * 2)
+                 player.HP = player.HPvalue[(int)player.plType] + (player.Upgrades[0] - 1) * 2;
+             
+
+             GUI.ResetCanvasBuffer();
+             GUI.DrawPlayers(this.players);
+             GUI.DrawScene();
          }
 
          public int ChooseOption(int numOpt)
@@ -531,34 +570,20 @@ namespace Dragon_Slayer_2
                  GUI.DrawPlayers(players);
                  Round();
 
-                 // Who died raise your hand!
-                 foreach (var item in players)
-                 {
-                     if (item.HP <= 0)
-                     {
-                         item.HP = 0;
-                         item.isAlive = false;
-                     }
-                 }
-
+                 
                  GUI.DrawPlayers(players);
 
-                 // Check if team won or not
-                 if (!players.Where(x => x.Team == Team.Good).Where(x => x.isAlive).Any())
+                 if (players.Where(x => x.isAlive).Select(x=>x.Team).Distinct().Count() == 1 )
                  {
                      End = true;
-                     winTeam = Team.Bad;
+                     winTeam = players.Where(x => x.isAlive).First().Team;
                  }
-                 else if (!players.Where(x => x.Team == Team.Bad).Where(x => x.isAlive).Any())
-                 {
-                     End = true;
-                     winTeam = Team.Good;
-                 }
+
              }
 
              return winTeam;
          }
-         public void GenerateGameConsequence(GameType gametype) 
+         public void GenerateGameSequence(GameType gametype) 
          {
              if (gametype == GameType.History)
              {
@@ -619,13 +644,38 @@ namespace Dragon_Slayer_2
                       this.GameSequence.Add(battle);
                  }
              }
+
+             else if (gametype == GameType.Skirmish)
+             {
+
+                 for (int i = 1; i <= 40; i++)
+                 {
+                     List<PreLoadEnemy> battle = new List<PreLoadEnemy>();
+                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), Team.Bad.ToString(), i, Team.Bad));
+                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), Team.Alien.ToString(), i, Team.Alien));
+                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), Team.SWAT.ToString(), i, Team.SWAT));
+                     this.GameSequence.Add(battle);
+                 }
+             }
+
+             else if (gametype == GameType.TwoVsTwo)
+             {
+
+                 for (int i = 1; i <= 40; i++)
+                 {
+                     List<PreLoadEnemy> battle = new List<PreLoadEnemy>();              
+                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy#1", i, Team.Bad));
+                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy#2", i, Team.Bad));
+                     this.GameSequence.Add(battle);
+                 }
+             }
          
          }
 
         // DEBUG and Balance SECTION
-
          public void Debug(PlayerType pl1, PlayerType pl2, int pl1lvl, int pl2lvl)
          {
+             GUI.DrawGUI = false;
              for (int k = 0; k < 4; k++)
              {
                  PlayerType pl = (PlayerType)k;
@@ -711,12 +761,16 @@ namespace Dragon_Slayer_2
                          this.Attack(players[i]);
                  }
          }
-
+         // END OF DEBUG
+         
+        
          public void AddPlayersToGame(int number)
          {
              for (int j = 1; j <= number; j++)
              {    
              // Add player to game
+                 GUI.ResetDynamicBuffer();
+                 GUI.DrawScene();
              Console.WriteLine("Player " + j+", Enter your name: ");
              string pName = Console.ReadLine();
              if (pName == "") pName = "Player " + j.ToString();
@@ -737,12 +791,12 @@ namespace Dragon_Slayer_2
              Console.WriteLine("1) 1 PLayer History Mode");
              Console.WriteLine("2) 2 Players History Mode - NOT IMPLEMENTED");
              Console.WriteLine("3) 1 PLayer Team Battles");
-             Console.WriteLine("4) 2 PLayers Vs 2 Battles - NOT IMPLEMENTED");
-             Console.WriteLine("5) Skirmish - NOT IMPLEMENTED");
+             Console.WriteLine("4) 2 PLayers Vs 2 Battles - IN TESTING");
+             Console.WriteLine("5) Skirmish");
              Console.WriteLine("Choose the game type:");
              int input = ChooseOption(5)-1;
              // list only only implemented game types
-             if (input != 0 & input != 2) input = 0; 
+             if (input == 1) input = 0; 
              this.GameType = (GameType)input;
          }
 
@@ -773,7 +827,7 @@ namespace Dragon_Slayer_2
              else AddPlayersToGame(1);
 
              //CREATE HISTORY 
-             GenerateGameConsequence(this.GameType);
+             GenerateGameSequence(this.GameType);
              
              // BATLLE!
              bool wishToContinue = true;
@@ -791,14 +845,11 @@ namespace Dragon_Slayer_2
                      }
              
 
-      
-
-
-
-
                  Team teamWin = StartBattle(numOfBattle);
                  Console.WriteLine(teamWin + " team win, do you want to continue? Y/N" );
                  string w = Console.ReadLine();
+                 GUI.ResetDynamicBuffer();
+                 GUI.DrawScene();
                  if (w.ToLower() == "y" || w.ToLower() == "yes")
                  {
                      wishToContinue = true;
@@ -808,12 +859,13 @@ namespace Dragon_Slayer_2
                          foreach (var item in players.Where(x => x.pController == Creature.Controller.Player))
                          {
                              LevelUP(item);
+                             GUI.ResetDynamicBuffer();
+                             GUI.DrawScene();
                          }
                      }
                  }
 
              }
-
 
              Console.WriteLine("Goodbuy, " + players[0].Name);
              Console.ReadLine();
@@ -834,8 +886,8 @@ namespace Dragon_Slayer_2
             Creature ct = new Creature("John", PlayerType.Knight, Creature.Controller.Player);
             Creature ct1 = new Creature("Nick", PlayerType.Knight, Creature.Controller.Player);
             DragonSlayer2Game game = new DragonSlayer2Game();
-            game.CreateGame();
-          //  game.Debug(PlayerType.Knight, PlayerType.Dragon, 10, 10);
+            //game.CreateGame();
+            game.Debug(PlayerType.Chupacabra, PlayerType.Dragon, 10, 10);
 
             game.GUI.DrawScene();
            // ct.DoAttack(game.players);
