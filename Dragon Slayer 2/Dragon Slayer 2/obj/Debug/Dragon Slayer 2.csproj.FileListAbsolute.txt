@@ -4,3 +4,9 @@ C:\Konstantin\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\bin\Debug\Dragon 
 C:\Konstantin\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\obj\Debug\Dragon Slayer 2.csprojResolveAssemblyReference.cache
 C:\Konstantin\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\obj\Debug\Dragon Slayer 2.exe
 C:\Konstantin\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\obj\Debug\Dragon Slayer 2.pdb
+D:\Seed Paths\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\bin\Debug\Dragon Slayer 2.exe.config
+D:\Seed Paths\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\obj\Debug\Dragon Slayer 2.exe
+D:\Seed Paths\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\obj\Debug\Dragon Slayer 2.pdb
+D:\Seed Paths\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\bin\Debug\Dragon Slayer 2.exe
+D:\Seed Paths\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\bin\Debug\Dragon Slayer 2.pdb
+D:\Seed Paths\Week-3-Challenge\Dragon Slayer 2\Dragon Slayer 2\obj\Debug\Dragon Slayer 2.csprojResolveAssemblyReference.cache
