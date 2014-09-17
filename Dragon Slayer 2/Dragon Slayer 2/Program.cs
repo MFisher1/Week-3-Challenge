@@ -665,7 +665,7 @@ namespace Dragon_Slayer_2
                  {
                      List<PreLoadEnemy> battle = new List<PreLoadEnemy>();              
                      battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy#1", i, Team.Bad));
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy#2", i, Team.Bad));
+                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy#2", i+1, Team.Bad));
                      this.GameSequence.Add(battle);
                  }
              }
@@ -886,8 +886,8 @@ namespace Dragon_Slayer_2
             Creature ct = new Creature("John", PlayerType.Knight, Creature.Controller.Player);
             Creature ct1 = new Creature("Nick", PlayerType.Knight, Creature.Controller.Player);
             DragonSlayer2Game game = new DragonSlayer2Game();
-            //game.CreateGame();
-            game.Debug(PlayerType.Chupacabra, PlayerType.Dragon, 10, 10);
+            game.CreateGame();
+            //game.Debug(PlayerType.Chupacabra, PlayerType.Dragon, 10, 10);
 
             game.GUI.DrawScene();
            // ct.DoAttack(game.players);
