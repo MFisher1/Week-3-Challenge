@@ -11,11 +11,11 @@ namespace Dragon_Slayer_2
      public enum MainWeapon { Sword, Kick, Fire, Bite }
      public enum SecondWeapon { FireBall, PoisonSpit, DeathJump, Electric }
      public enum Special { FirstAidKit, WTF_It_Was, SpinAround, DrinkSeaWater }
-     public enum GameType { History, TwoVsTwo, ThreeVsThree, Skirmish}
+     public enum GameType { History, TwoPlayersHistory, OnePLayerTeam, TwoVsTwo, Skirmish}
 
      public class Creature
      {
-         public int[] HPvalue = new int[] { 120, 115, 200, 250 };
+         public int[] HPvalue = new int[] { 120, 115, 200, 240 };
          public enum Controller {Player, AI}
          public string Name { get; set; }
          public int HP { get; set; }
@@ -67,12 +67,15 @@ namespace Dragon_Slayer_2
         public PlayerType type;
         public string Name;
         public int Level;
+        public Team Team; 
 
-        public PreLoadEnemy(PlayerType pType, string name, int Lvl)
+        public PreLoadEnemy(PlayerType pType, string name, int Lvl, Team team)
         {
             this.type = pType;
             this.Name = name;
             this.Level = Lvl;
+            this.Team = team;
+            
         }
     }
    
@@ -162,7 +165,7 @@ namespace Dragon_Slayer_2
             Scene.Add(tmp);
             Scene.Add("          ");
 
-            if (true) //player.plType == PlayerType.Knight
+            if (player.plType == PlayerType.Knight) //
             {
                 Scene.Add("     O      ");
                 Scene.Add("    /|\\     ");
@@ -170,6 +173,31 @@ namespace Dragon_Slayer_2
                 Scene.Add("    / \\     ");   
             }
 
+            if (player.plType == PlayerType.Dragon)
+            {
+                Scene.Add("   /\\_/\\    ");
+                Scene.Add("  ( q p )   ");
+                Scene.Add("    \\_/     ");
+                Scene.Add("            ");
+            
+            }
+            if (player.plType == PlayerType.Godzilla)
+            {
+                Scene.Add("   /\\/\\/\\    ");
+                Scene.Add("  ( q  p )   ");
+                Scene.Add("   \\____/    ");
+                Scene.Add("             ");
+
+            }
+
+            if (player.plType == PlayerType.Chupacabra)
+            {
+                Scene.Add("    \\|/    ");
+                Scene.Add("\\__(. .)__/");
+                Scene.Add("   /\\_/\\   ");
+                Scene.Add("  /\\   /\\  ");
+
+            }
 
             Scene.Add("------------");
 
@@ -193,8 +221,8 @@ namespace Dragon_Slayer_2
          private Random rnd = new Random();
          private int[] WeaponDamageList = new int[] { 29, 7, 90,    20, 5, 100,   26, 2, 100,  //Knight
                                                       35,10,80,     25,10,70,     20,2,100,    //Chupa
-                                                      14,10,90,     19,5,80,      10,2,100,    //Dragon
-                                                      10,15,90,     11,6,80,      14,3,100};   //Godzilla
+                                                      14,10,90,     15,5,80,      10,2,100,    //Dragon
+                                                      10,15,90,     11,6,80,      13,3,100};   //Godzilla
 
          //public enum PlayerType {     Knight,      Chupacabra,   Dragon,     Godzilla }
          //public enum MainWeapon {     Sword,       Kick,         Fire,       Bite }
@@ -206,6 +234,7 @@ namespace Dragon_Slayer_2
          public Graphic GUI = new Graphic();
          public int round = 1;
          List<List<PreLoadEnemy>> GameSequence = new List<List<PreLoadEnemy>>();
+         public GameType GameType { get; set; } 
 
 
          public DragonSlayer2Game ()
@@ -429,7 +458,8 @@ namespace Dragon_Slayer_2
                  // Common attacks
                  else
                  {
-                     Creature enemy = players.Where(x => x.playerID == Ids[0]).First();
+                     int id = rnd.Next(0, Ids.Count);
+                     Creature enemy = players.Where(x => x.playerID == Ids[id]).First();
                      enemy.HP -= damage;
                      GUI.DrawText(player.Name + " " + player.plType.ToString() + " hit " +
                            enemy.Name + " " + enemy.plType.ToString() + " with "
@@ -530,51 +560,65 @@ namespace Dragon_Slayer_2
          }
          public void GenerateGameConsequence(GameType gametype) 
          {
-             // History Mode
-             for (int i = 1; i <= 10; i++)
+             if (gametype == GameType.History)
              {
-                 List<PreLoadEnemy> battle = new List<PreLoadEnemy>();
-                 if (i <= 4)
+                 for (int i = 1; i <= 10; i++)
                  {
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", i));
-                 }
+                     List<PreLoadEnemy> battle = new List<PreLoadEnemy>();
+                     if (i <= 4)
+                     {
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", i, Team.Bad));
+                     }
 
-                 if (i == 5)
-                 {
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy", 2));
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 1));
-                 }
+                     if (i == 5)
+                     {
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy", 2, Team.Bad));
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 1, Team.Bad));
+                     }
 
-                 if (i == 6)
-                 {
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy", 3));
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 1));
-                 }
-                 if (i == 7)
-                 {
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy", 3));
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 2));
-                 }
- 
+                     if (i == 6)
+                     {
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy", 3, Team.Bad));
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 1, Team.Bad));
+                     }
+                     if (i == 7)
+                     {
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy", 3, Team.Bad));
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 2, Team.Bad));
+                     }
 
-                 if (i == 8)
-                 {
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Serious", 9));
-                 }
 
-                 if (i == 9)
-                 {
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Heavy", 5));
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 2));
-                 }
+                     if (i == 8)
+                     {
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Serious", 9, Team.Bad));
+                     }
 
-                 if (i == 10)
-                 {
-                     battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "BadAss", 12));
+                     if (i == 9)
+                     {
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Heavy", 5, Team.Bad));
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Weak", 2, Team.Bad));
+                     }
+
+                     if (i == 10)
+                     {
+                         battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "BadAss", 12, Team.Bad));
+                     }
+                     GameSequence.Add(battle);
                  }
-                 GameSequence.Add(battle);
              }
 
+             else if (gametype == GameType.OnePLayerTeam)
+             {
+                
+                 for (int i = 1; i <= 40; i++)
+                 {
+                     List<PreLoadEnemy> battle = new List<PreLoadEnemy>();   
+                      battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "TeamMate", i, Team.Good));
+                      battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy#1", i, Team.Bad));
+                      battle.Add(new PreLoadEnemy((PlayerType)rnd.Next(0, 4), "Enemy#2", i, Team.Bad));
+                      this.GameSequence.Add(battle);
+                 }
+             }
          
          }
 
@@ -590,19 +634,16 @@ namespace Dragon_Slayer_2
              int pl1Win = 0;
              int pl2Win = 0;
 
-             for (int j = 10; j <= 10; j++)
+             for (int j = 1; j <= 10; j++)
              {
                  pl1Win = 0;
                  pl2Win = 0;
                  for (int i = 0; i < 1000; i++)
                  {
                      this.players.Clear();
-                     this.AddNewPlayer("pl1", pl1, Creature.Controller.AI, Team.Good, j);
-                   
-                     //PlayerType pl3s = (PlayerType)rnd.Next(0,4);
-                    // this.AddNewPlayer("pl2", pl3s, Creature.Controller.AI, Team.Bad, 2);
+                     this.AddNewPlayer("pl1", pl1, Creature.Controller.AI, Team.Good, j);               
 
-                       this.AddNewPlayer("pl2", pl, Creature.Controller.AI, Team.Bad, 12);
+                       this.AddNewPlayer("pl2", pl, Creature.Controller.AI, Team.Bad, j);
                      Team win = this.StartBattleDebug();
                      if (win == Team.Bad) 
                          pl2Win++;
@@ -671,6 +712,40 @@ namespace Dragon_Slayer_2
                  }
          }
 
+         public void AddPlayersToGame(int number)
+         {
+             for (int j = 1; j <= number; j++)
+             {    
+             // Add player to game
+             Console.WriteLine("Player " + j+", Enter your name: ");
+             string pName = Console.ReadLine();
+             if (pName == "") pName = "Player " + j.ToString();
+             Console.Clear();
+             // Load player from save?
+             for (int i = 0; i < 4; i++)
+             {
+                 Console.WriteLine((i + 1) + ") " + (PlayerType)i);
+             }
+             Console.WriteLine(pName + ", choose your hero: ");
+             int input = ChooseOption(4) - 1;
+             this.AddNewPlayer(pName, (PlayerType)input, Creature.Controller.Player, Team.Good, 1);
+             Console.WriteLine();
+             }
+         }
+         public void ChooseGameType()
+         {
+             Console.WriteLine("1) 1 PLayer History Mode");
+             Console.WriteLine("2) 2 Players History Mode - NOT IMPLEMENTED");
+             Console.WriteLine("3) 1 PLayer Team Battles");
+             Console.WriteLine("4) 2 PLayers Vs 2 Battles - NOT IMPLEMENTED");
+             Console.WriteLine("5) Skirmish - NOT IMPLEMENTED");
+             Console.WriteLine("Choose the game type:");
+             int input = ChooseOption(5)-1;
+             // list only only implemented game types
+             if (input != 0 & input != 2) input = 0; 
+             this.GameType = (GameType)input;
+         }
+
          public void LevelUP(Creature player)
          {
              Console.WriteLine(player.Name + ", you've got a LEVEL UP!");
@@ -689,22 +764,16 @@ namespace Dragon_Slayer_2
              int numOfBattle = 1;
 
              Console.WriteLine("Welcome to Dargon Slayer 2");
-             Console.WriteLine("Enter your name: ");
-             string pName = Console.ReadLine();
-             if (pName == "") pName = "Player";
-             Console.Clear();
-             // Load player from save?
-             for (int i = 0; i < 4; i++)
-			  {
-			 Console.WriteLine((i+1) + ") " + (PlayerType)i);
-		      }
-             Console.WriteLine(pName + ", choose your hero: ");
-             int input = ChooseOption(4)-1;
-             this.AddNewPlayer(pName, (PlayerType)input, Creature.Controller.Player, Team.Good,1);
-             Console.WriteLine();
+
+             ChooseGameType();
             
+             //Add players
+             if (GameType == GameType.TwoPlayersHistory || GameType == GameType.TwoVsTwo)
+                 AddPlayersToGame(2);
+             else AddPlayersToGame(1);
+
              //CREATE HISTORY 
-             GenerateGameConsequence(GameType.History);
+             GenerateGameConsequence(this.GameType);
              
              // BATLLE!
              bool wishToContinue = true;
@@ -715,10 +784,17 @@ namespace Dragon_Slayer_2
                  {
                      item.Respawn();
                  }
-                 foreach (var item in GameSequence[numOfBattle - 1])
-                 {
-                     this.AddRandomPlayer(item.Name, Creature.Controller.AI, item.Level, Team.Bad);
-                 }
+
+                     foreach (var item in GameSequence[numOfBattle - 1])
+                     {
+                         this.AddRandomPlayer(item.Name, Creature.Controller.AI, item.Level, item.Team);
+                     }
+             
+
+      
+
+
+
 
                  Team teamWin = StartBattle(numOfBattle);
                  Console.WriteLine(teamWin + " team win, do you want to continue? Y/N" );
@@ -759,7 +835,7 @@ namespace Dragon_Slayer_2
             Creature ct1 = new Creature("Nick", PlayerType.Knight, Creature.Controller.Player);
             DragonSlayer2Game game = new DragonSlayer2Game();
             game.CreateGame();
-            //game.Debug(PlayerType.Knight, PlayerType.Dragon, 10, 10);
+          //  game.Debug(PlayerType.Knight, PlayerType.Dragon, 10, 10);
 
             game.GUI.DrawScene();
            // ct.DoAttack(game.players);
