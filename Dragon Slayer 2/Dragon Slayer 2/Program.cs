@@ -864,10 +864,11 @@ namespace Dragon_Slayer_2
                          }
                      }
                  }
+                 else wishToContinue = false;
 
              }
 
-             Console.WriteLine("Goodbuy, " + players[0].Name);
+             Console.WriteLine("Goodbye, " + players[0].Name);
              Console.ReadLine();
             //..next round till team lose
         //
@@ -883,15 +884,10 @@ namespace Dragon_Slayer_2
         static void Main(string[] args)
         {
 
-            Creature ct = new Creature("John", PlayerType.Knight, Creature.Controller.Player);
-            Creature ct1 = new Creature("Nick", PlayerType.Knight, Creature.Controller.Player);
             DragonSlayer2Game game = new DragonSlayer2Game();
             game.CreateGame();
             //game.Debug(PlayerType.Chupacabra, PlayerType.Dragon, 10, 10);
 
-            game.GUI.DrawScene();
-           // ct.DoAttack(game.players);
-            //ct.ChooseAttack();
             Console.Read();
         }
     }
